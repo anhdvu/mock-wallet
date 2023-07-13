@@ -1,6 +1,6 @@
 package main
 
-type message struct {
+type jsonMessage struct {
 	Challenge                 string             `json:"challenge,omitempty"`
 	CustomerReference         string             `json:"customerReference"`
 	CurrencyCode              string             `json:"currencyCode,omitempty"`

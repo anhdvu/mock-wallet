@@ -57,7 +57,7 @@ type administrativeMessage struct {
 	Terminal        string `json:"terminal"`
 	Reference       string `json:"reference"`
 	MsgType         string `json:"message_type"`
-	KLVData         string `json:"klv"`
+	KLV             string `json:"klv"`
 	TransactionID   string `json:"transaction_id"`
 	TransactionDate string `json:"transaction_date"`
 	Checksum        string `json:"checksum"`

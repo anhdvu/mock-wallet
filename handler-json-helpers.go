@@ -87,3 +87,20 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, dst any
 
 	return nil
 }
+
+func (app *application) getAuthorizationHeaderChecksum(r *http.Request) (string, error) {
+	authorizationHeader := r.Header.Get("Authorization")
+
+	if authorizationHeader != "" {
+		headerParts := strings.Split(authorizationHeader, " ")
+		if len(headerParts) == 2 && headerParts[0] == "CS-HMAC-SHA-256" {
+			credentials := strings.Split(headerParts[1], "=")
+			if len(credentials) == 3 && credentials[1] == "Terminal" {
+				return credentials[2], nil
+			}
+			return "", errors.New("authorization header credentials were incorrectly formatted")
+		}
+		return "", errors.New("authorization header was incorrectly formatted")
+	}
+	return "", errors.New("authorization header was not found")
+}

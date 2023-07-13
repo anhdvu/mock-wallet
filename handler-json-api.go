@@ -7,7 +7,7 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
-func (app *application) XMLRequestHandler() http.HandlerFunc {
+func (app *application) JSONRequestHandler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, err := uuid.NewV4()
 		if err != nil {
@@ -17,35 +17,25 @@ func (app *application) XMLRequestHandler() http.HandlerFunc {
 		}
 
 		log := &record{
-			Type: "xml",
+			Type: "json",
 			Time: time.Now(),
 			ID:   id,
 		}
 
-		payload := &xmlPayload{}
-		err = app.readXML(r, payload)
+		checksum, err := app.getAuthorizationHeaderChecksum(r)
 		if err != nil {
 			app.logger.Println(err)
 			app.badRequestResponse(w, err)
 			return
 		}
+		log.Checksum = checksum
 
-		err = app.processXMLPayload(payload, log)
-		if err != nil {
-			app.logger.Println(err)
-		}
-
-		response, err := app.companion.makeResponse(payload.MethodName)
+		payload := &jsonMessage{}
+		err = app.readJSON(w, r, payload)
 		if err != nil {
 			app.logger.Println(err)
 			app.badRequestResponse(w, err)
 			return
-		}
-		log.Response = response
-		err = app.respondXML(w, http.StatusOK, response)
-		if err != nil {
-			app.logger.Println(err)
-			app.serverErrorResponse(w, err)
 		}
 	})
 }

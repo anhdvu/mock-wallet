@@ -1,3 +1,5 @@
 mock-wallet
 *.exe
 makefile
+*.toml
+.dockerignore

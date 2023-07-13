@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -13,26 +12,28 @@ import (
 )
 
 type application struct {
-	logger *log.Logger
-	config config
+	logger    *log.Logger
+	config    config
+	companion *companionResponses
 }
 
 type config struct {
 	env  string
-	port int
+	port string
 }
 
 // New function returns a new instance of Mock Wallet application
 func New(config config) *application {
 	return &application{
-		logger: log.New(os.Stdout, "", log.LstdFlags|log.Llongfile),
-		config: config,
+		logger:    log.New(os.Stdout, "", log.LstdFlags|log.Llongfile),
+		config:    config,
+		companion: defaultCompanionResponses(),
 	}
 }
 
 func (app *application) run() error {
 	server := &http.Server{
-		Addr:         fmt.Sprintf(":%d", app.config.port),
+		Addr:         app.config.port,
 		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,

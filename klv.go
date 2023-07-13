@@ -6,9 +6,9 @@ import (
 )
 
 var (
-	ErrKeyNotExists  = errors.New("the key does not exist")
-	ErrKLVTooShort   = errors.New("the provided KLV string is too short")
-	ErrKLVNotCorrect = errors.New("the provided KLV string is incorrect")
+	ErrKLVKeyNotExists = errors.New("the KLV key does not exist")
+	ErrKLVTooShort     = errors.New("the provided KLV string is too short")
+	ErrKLVNotCorrect   = errors.New("the provided KLV string is incorrect")
 )
 
 func klvLookUp(k string) (string, error) {
@@ -116,12 +116,12 @@ func klvLookUp(k string) (string, error) {
 		"932": "unique transaction reference",
 		"933": "transaction purpose",
 		"998": "json transaction data",
-		"999": "Generic Key",
+		"999": "generic key",
 	}
 
 	val, ok := klvDict[k]
 	if !ok {
-		return "", ErrKeyNotExists
+		return "", ErrKLVKeyNotExists
 	}
 
 	return val, nil

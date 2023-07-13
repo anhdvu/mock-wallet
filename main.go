@@ -1,14 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 	"runtime/debug"
 )
 
+const (
+	devPort = "8080"
+)
+
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = devPort
+	}
+
 	cfg := config{
 		env:  "dev",
-		port: 8000,
+		port: fmt.Sprintf(":%s", port),
 	}
 
 	app := New(cfg)
