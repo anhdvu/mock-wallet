@@ -88,6 +88,15 @@ func defaultCompanionResponses() *companionResponses {
 	}
 }
 
+func (cr *companionResponses) allResponses() map[string]int {
+	o := make(map[string]int)
+	for k, v := range cr.d {
+		o[k] = v.resultCode
+	}
+
+	return o
+}
+
 func (cr *companionResponses) makeResponse(m string) ([]byte, error) {
 	cr.mu.Lock()
 	defer cr.mu.Unlock()
