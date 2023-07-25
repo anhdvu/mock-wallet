@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -18,8 +19,10 @@ func (app *application) respondXML(w http.ResponseWriter, status int, response [
 	return nil
 }
 
-func (app *application) readXML(r *http.Request, dst any) error {
-	decoder := xml.NewDecoder(r.Body)
+func (app *application) readXML(r *http.Request, dst any, l *logRecord) error {
+	var b *bytes.Buffer
+
+	decoder := xml.NewDecoder(io.TeeReader(r.Body, b))
 	err := decoder.Decode(dst)
 	if err != nil {
 		var syntaxError *xml.SyntaxError
@@ -39,13 +42,15 @@ func (app *application) readXML(r *http.Request, dst any) error {
 
 	err = decoder.Decode(&struct{}{})
 	if err != io.EOF {
-		return errors.New("body must contain a single JSON value")
+		return errors.New("body must contain a single XML value")
 	}
+
+	l.RawRequest = b.Bytes()
 
 	return nil
 }
 
-func (app *application) processXMLPayload(x *xmlPayload, log *record) error {
+func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 	switch x.MethodName {
 	case "Deduct", "LoadAuth":
 		p := &authorisation{

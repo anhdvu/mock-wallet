@@ -13,8 +13,9 @@ import (
 
 type application struct {
 	logger    *log.Logger
-	config    config
 	companion *companionResponses
+	config    config
+	apiLogger *apiLogManager
 }
 
 type config struct {
@@ -23,7 +24,7 @@ type config struct {
 }
 
 // New function returns a new instance of Mock Wallet application
-func New(config config) *application {
+func newApp(config config) *application {
 	return &application{
 		logger:    log.New(os.Stdout, "", log.LstdFlags|log.Llongfile),
 		config:    config,
@@ -56,7 +57,7 @@ func (app *application) run() error {
 		shutdownErrChan <- server.Shutdown(ctx)
 	}()
 
-	app.logger.Printf("application is running on port %d", app.config.port)
+	app.logger.Printf("application is running on port %s", app.config.port)
 	err := server.ListenAndServe()
 	if !errors.Is(err, http.ErrServerClosed) {
 		return err

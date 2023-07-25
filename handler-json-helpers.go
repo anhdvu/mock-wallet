@@ -24,11 +24,19 @@ func (app *application) respondJSON(w http.ResponseWriter, status int, data any)
 	return nil
 }
 
+func (app *application) respondRaw(w http.ResponseWriter, status int, data []byte) error {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(status)
+	w.Write(data)
+
+	return nil
+}
+
 func (app *application) respondWithJSON(w http.ResponseWriter, status int, data any) error {
 	return app.respondJSONWithLogRecord(w, status, data, nil)
 }
 
-func (app *application) respondJSONWithLogRecord(w http.ResponseWriter, status int, data any, log *record) error {
+func (app *application) respondJSONWithLogRecord(w http.ResponseWriter, status int, data any, log *logRecord) error {
 	payload, err := json.Marshal(data)
 	if err != nil {
 		return err

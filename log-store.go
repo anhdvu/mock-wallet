@@ -3,8 +3,7 @@ package main
 import "context"
 
 type logStore interface {
-	Get(ctx context.Context, id string) (record, error)
-	Write(ctx context.Context, r record) error
-	All(ctx context.Context) ([]record, error)
-	Recent(ctx context.Context) ([]record, error)
+	GetLogByID(ctx context.Context, id string) (*logRecord, error)
+	SaveLog(ctx context.Context, r *logRecord) error
+	FindLogs(ctx context.Context, filter logFilter) ([]*logRecord, error)
 }

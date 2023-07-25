@@ -18,6 +18,7 @@ func (app *application) respondJSONWithError(w http.ResponseWriter, status int, 
 
 func (app *application) serverErrorResponse(w http.ResponseWriter, err error) {
 	errMsg := "the server ran into a technical issue."
+	app.logger.Println(err)
 	app.respondJSONWithError(w, http.StatusInternalServerError, errMsg)
 }
 
