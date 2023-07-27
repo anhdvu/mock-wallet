@@ -36,7 +36,7 @@ func (rs *redisLogStore) GetLogByID(ctx context.Context, id string) (*logRecord,
 }
 
 func (rs *redisLogStore) SaveLog(ctx context.Context, l *logRecord) error {
-	logID := fmt.Sprintf("log:%s", l.ID.String())
+	logID := l.ID.String()
 
 	log, err := json.Marshal(l)
 	if err != nil {

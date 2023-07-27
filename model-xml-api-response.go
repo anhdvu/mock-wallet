@@ -11,8 +11,8 @@ const (
 )
 
 var (
-	ErrInvalidResultCode = errors.New("the given error code was invalid")
-	ErrMethodNotExist    = errors.New("the given method does not exist")
+	ErrInvalidResponseCode = errors.New("the given response code was invalid")
+	ErrMethodNotExist      = errors.New("the given method does not exist")
 )
 
 type companionResponses struct {
@@ -109,7 +109,7 @@ func (cr *companionResponses) makeResponse(m string) ([]byte, error) {
 }
 
 func (cr *companionResponses) vefiryMethod(m string) bool {
-	if _, ok := cr.d[m]; !ok {
+	if _, ok := cr.d[m]; ok {
 		return ok
 	}
 	return false
@@ -139,5 +139,5 @@ func (r *response) updateCode(code int) error {
 		r.resultCode = code
 		return nil
 	}
-	return ErrInvalidResultCode
+	return ErrInvalidResponseCode
 }

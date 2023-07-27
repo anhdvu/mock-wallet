@@ -42,7 +42,7 @@ func (app *application) respondJSONWithLogRecord(w http.ResponseWriter, status i
 		return err
 	}
 
-	log.Response = payload
+	log.Response = string(payload)
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(status)

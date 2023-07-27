@@ -10,10 +10,10 @@ type logRecord struct {
 	Checksum     string
 	Type         string
 	Time         time.Time
-	RawRequest   []byte
-	JSON         []byte
+	RawRequest   string
+	JSON         string
 	KLVBreakdown [][4]string
-	Response     []byte
+	Response     string
 	ID           uuid.UUID
 }
 

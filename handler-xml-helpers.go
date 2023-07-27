@@ -20,9 +20,10 @@ func (app *application) respondXML(w http.ResponseWriter, status int, response [
 }
 
 func (app *application) readXML(r *http.Request, dst any, l *logRecord) error {
-	var b *bytes.Buffer
+	var b bytes.Buffer
 
-	decoder := xml.NewDecoder(io.TeeReader(r.Body, b))
+	decoder := xml.NewDecoder(io.TeeReader(r.Body, &b))
+
 	err := decoder.Decode(dst)
 	if err != nil {
 		var syntaxError *xml.SyntaxError
@@ -30,7 +31,7 @@ func (app *application) readXML(r *http.Request, dst any, l *logRecord) error {
 
 		switch {
 		case errors.As(err, &syntaxError):
-			return fmt.Errorf("body contains badly-formatted XML (at line %d)", syntaxError.Line)
+			return fmt.Errorf("body contains badly-formatted XML - %s", syntaxError.Error())
 		case errors.As(err, &tagPathError):
 			return fmt.Errorf("body contains tag path error Field1 - %s, Field2 - %s, Tag1 - %s, Tag2 - %s", tagPathError.Field1, tagPathError.Field2, tagPathError.Tag1, tagPathError.Tag2)
 		case errors.Is(err, io.EOF):
@@ -45,7 +46,7 @@ func (app *application) readXML(r *http.Request, dst any, l *logRecord) error {
 		return errors.New("body must contain a single XML value")
 	}
 
-	l.RawRequest = b.Bytes()
+	l.RawRequest = b.String()
 
 	return nil
 }
@@ -71,7 +72,7 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		if err != nil {
 			return err
 		}
-		log.JSON = b
+		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
@@ -97,7 +98,7 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		if err != nil {
 			return err
 		}
-		log.JSON = b
+		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
@@ -124,7 +125,7 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		if err != nil {
 			return err
 		}
-		log.JSON = b
+		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
@@ -150,7 +151,7 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		if err != nil {
 			return err
 		}
-		log.JSON = b
+		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
@@ -178,7 +179,7 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		if err != nil {
 			return err
 		}
-		log.JSON = b
+		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
@@ -207,7 +208,7 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		if err != nil {
 			return err
 		}
-		log.JSON = b
+		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {

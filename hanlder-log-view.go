@@ -45,16 +45,34 @@ func (app *application) getURLParams(r *http.Request) (page, size int) {
 	pageParam := params.Get("page")
 	sizeParam := params.Get("size")
 
-	page, err := strconv.Atoi(pageParam)
-	if err != nil {
-		app.logger.Println(err)
+	var err error
+
+	if pageParam != "" {
+		page, err = strconv.Atoi(pageParam)
+		if err != nil || page < 1 {
+			app.logger.Println(err)
+			page = 1
+		}
+	}
+
+	if page < 1 {
 		page = 1
 	}
 
-	size, err = strconv.Atoi(sizeParam)
-	if err != nil {
-		app.logger.Println(err)
+	if sizeParam != "" {
+		size, err = strconv.Atoi(sizeParam)
+		if err != nil || size < 1 {
+			app.logger.Println(err)
+			size = 10
+		}
+	}
+
+	if size < 1 {
 		size = 10
+	}
+
+	if size > 50 {
+		size = 50
 	}
 
 	return

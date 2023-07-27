@@ -34,7 +34,7 @@ func (app *application) XMLRequestHandler() http.HandlerFunc {
 			app.badRequestResponse(w, err)
 			return
 		}
-		log.Response = response
+		log.Response = string(response)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
