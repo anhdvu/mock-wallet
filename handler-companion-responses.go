@@ -2,7 +2,7 @@ package main
 
 import "net/http"
 
-func (app *application) showCompanionResponsesHandler() http.HandlerFunc {
+func (app *application) companionResponsesHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:

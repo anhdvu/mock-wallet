@@ -13,6 +13,7 @@ const (
 
 func main() {
 	port := getEnvOrDefault("PORT", devPort)
+	redisConString := getEnvOrDefault("REDIS_CONNECTION", "http://localhost:6379")
 
 	cfg := config{
 		env:  "dev",
@@ -21,7 +22,7 @@ func main() {
 
 	app := newApp(cfg)
 
-	rc, err := openRedis("rediss://default:b53dd65dcb914e96969ab06c5ca625d1@upward-tahr-33126.upstash.io:33126")
+	rc, err := openRedis(redisConString)
 	if err != nil {
 		app.logger.Fatal(err)
 		os.Exit(1)

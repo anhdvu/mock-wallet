@@ -17,6 +17,7 @@ var (
 
 type companionResponses struct {
 	d  map[string]*response
+	am map[string]*response
 	mu sync.RWMutex
 }
 
