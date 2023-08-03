@@ -1,25 +1,28 @@
 package main
 
 import (
-	"errors"
 	"net/http"
 )
 
 func (app *application) klvHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			w.Header().Set("Allow", http.MethodGet)
-			app.respondJSONWithError(w, http.StatusMethodNotAllowed, "only GET method is allowed")
+		if r.Method != http.MethodPost {
+			w.Header().Set("Allow", http.MethodPost)
+			app.respondJSONWithError(w, http.StatusMethodNotAllowed, "only POST method is allowed")
 			return
 		}
 
-		str := r.URL.Query().Get("string")
-		if str == "" {
-			app.badRequestResponse(w, errors.New("no KLV was provided"))
+		var input struct {
+			KLV string `json:"klv"`
+		}
+
+		err := app.readJSON(w, r, &input)
+		if err != nil {
+			app.badRequestResponse(w, err)
 			return
 		}
 
-		out, err := breakDownKLV(str)
+		out, err := breakDownKLV(input.KLV)
 		if err != nil {
 			app.logger.Println(err)
 			app.badRequestResponse(w, err)
@@ -27,8 +30,8 @@ func (app *application) klvHandler() http.HandlerFunc {
 		}
 
 		res := jsonResponse{
-			"message": "klv breakdown",
-			"result":  out,
+			"klv":    input.KLV,
+			"result": out,
 		}
 
 		err = app.respondJSON(w, http.StatusOK, res)

@@ -21,14 +21,28 @@ func (app *application) JSONRequestHandler() http.HandlerFunc {
 		}
 		log.Checksum = checksum
 
-		payload := &jsonMessage{}
-		err = app.readJSON(w, r, payload)
+		p := &jsonMessage{}
+		err = app.readJSONWithLogRecord(w, r, p, log)
 		if err != nil {
 			app.logger.Println(err)
 			app.badRequestResponse(w, err)
 			return
 		}
 
-		// TO-DO
+		bd, err := breakDownKLV(p.Challenge)
+		if err != nil {
+			app.logger.Println(err)
+			log.KLVBreakdown = nil
+		} else {
+			log.KLVBreakdown = bd
+		}
+
+		p.ResultCode = "0000"
+
+		err = app.respondJSONWithLogRecord(w, 200, p, log)
+		if err != nil {
+			app.logger.Println(err)
+			app.serverErrorResponse(w, err)
+		}
 	})
 }

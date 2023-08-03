@@ -7,13 +7,13 @@ import (
 )
 
 type logRecord struct {
+	Time         time.Time
 	Checksum     string
 	Type         string
-	Time         time.Time
 	RawRequest   string
 	JSON         string
-	KLVBreakdown [][4]string
 	Response     string
+	KLVBreakdown [][4]string
 	ID           uuid.UUID
 }
 
