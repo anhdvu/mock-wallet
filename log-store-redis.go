@@ -82,7 +82,6 @@ func (rs *redisLogStore) FindLogs(ctx context.Context, filter logFilter) ([]*log
 	return result, nil
 }
 
-// rediss://default:b53dd65dcb914e96969ab06c5ca625d1@upward-tahr-33126.upstash.io:33126
 func openRedis(redisURL string) (*redis.Client, error) {
 	config, err := redis.ParseURL(redisURL)
 	if err != nil {

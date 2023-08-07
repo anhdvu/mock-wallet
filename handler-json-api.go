@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
+	"time"
 )
 
 func (app *application) JSONRequestHandler() http.HandlerFunc {
@@ -39,10 +42,24 @@ func (app *application) JSONRequestHandler() http.HandlerFunc {
 
 		p.ResultCode = "0000"
 
-		err = app.respondJSONWithLogRecord(w, 200, p, log)
+		res, err := json.Marshal(p)
 		if err != nil {
 			app.logger.Println(err)
 			app.serverErrorResponse(w, err)
+			return
 		}
+
+		log.Response = string(res)
+
+		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		defer cancel()
+		err = app.apiLogger.SaveLog(ctx, log)
+		if err != nil {
+			app.logger.Println(err)
+			app.serverErrorResponse(w, err)
+			return
+		}
+
+		app.respondRaw(w, 200, res)
 	})
 }
