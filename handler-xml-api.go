@@ -23,12 +23,12 @@ func (app *application) XMLRequestHandler() http.HandlerFunc {
 			return
 		}
 
-		err = app.processXMLPayload(payload, log)
+		messageName, err := app.processXMLPayload(payload, log)
 		if err != nil {
 			app.logger.Println(err)
 		}
 
-		response, err := app.companion.makeResponse(payload.MethodName)
+		response, err := app.companion.makeResponse(payload.MethodName, messageName)
 		if err != nil {
 			app.logger.Println(err)
 			app.badRequestResponse(w, err)

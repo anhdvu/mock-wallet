@@ -51,7 +51,8 @@ func (app *application) readXML(r *http.Request, dst any, l *logRecord) error {
 	return nil
 }
 
-func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
+func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string, error) {
+	var messageName string
 	switch x.MethodName {
 	case "Deduct", "LoadAuth":
 		p := &authorisation{
@@ -70,14 +71,14 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
-			return err
+			return messageName, err
 		}
 		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
 			log.KLVBreakdown = nil
-			return err
+			return messageName, err
 		}
 		log.KLVBreakdown = klv
 
@@ -96,14 +97,14 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
-			return err
+			return messageName, err
 		}
 		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
 			log.KLVBreakdown = nil
-			return err
+			return messageName, err
 		}
 		log.KLVBreakdown = klv
 
@@ -123,14 +124,14 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
-			return err
+			return messageName, err
 		}
 		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
 			log.KLVBreakdown = nil
-			return err
+			return messageName, err
 		}
 		log.KLVBreakdown = klv
 
@@ -149,16 +150,17 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
-			return err
+			return messageName, err
 		}
 		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
 			log.KLVBreakdown = nil
-			return err
+			return messageName, err
 		}
 		log.KLVBreakdown = klv
+		messageName = p.MsgType
 
 	case "Load":
 		p := &authorisation{
@@ -177,14 +179,14 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
-			return err
+			return messageName, err
 		}
 		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
 			log.KLVBreakdown = nil
-			return err
+			return messageName, err
 		}
 		log.KLVBreakdown = klv
 
@@ -206,17 +208,17 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) error {
 		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
-			return err
+			return messageName, err
 		}
 		log.JSON = string(b)
 
 		klv, err := breakDownKLV(p.KLV)
 		if err != nil {
 			log.KLVBreakdown = nil
-			return err
+			return messageName, err
 		}
 		log.KLVBreakdown = klv
 	}
 
-	return nil
+	return messageName, nil
 }
