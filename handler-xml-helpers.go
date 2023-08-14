@@ -53,6 +53,7 @@ func (app *application) readXML(r *http.Request, dst any, l *logRecord) error {
 
 func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string, error) {
 	var messageName string
+	var processErr error
 	switch x.MethodName {
 	case "Deduct", "LoadAuth":
 		p := &authorisation{
@@ -68,19 +69,12 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string
 			Checksum:        x.Params[8].Value.StringParam,
 		}
 
-		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
 			return messageName, err
 		}
-		log.JSON = string(b)
 
-		klv, err := breakDownKLV(p.KLV)
-		if err != nil {
-			log.KLVBreakdown = nil
-			return messageName, err
-		}
-		log.KLVBreakdown = klv
+		processErr = log.addInfo(p.Checksum, string(b), p.KLV)
 
 	case "Balance":
 		p := &balance{
@@ -94,19 +88,12 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string
 			Checksum:        x.Params[6].Value.StringParam,
 		}
 
-		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
 			return messageName, err
 		}
-		log.JSON = string(b)
 
-		klv, err := breakDownKLV(p.KLV)
-		if err != nil {
-			log.KLVBreakdown = nil
-			return messageName, err
-		}
-		log.KLVBreakdown = klv
+		processErr = log.addInfo(p.Checksum, string(b), p.KLV)
 
 	case "Stop":
 		p := &stop{
@@ -121,19 +108,11 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string
 			Checksum:        x.Params[7].Value.StringParam,
 		}
 
-		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
 			return messageName, err
 		}
-		log.JSON = string(b)
-
-		klv, err := breakDownKLV(p.KLV)
-		if err != nil {
-			log.KLVBreakdown = nil
-			return messageName, err
-		}
-		log.KLVBreakdown = klv
+		processErr = log.addInfo(p.Checksum, string(b), p.KLV)
 
 	case "AdministrativeMessage":
 		p := &administrativeMessage{
@@ -147,19 +126,12 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string
 			Checksum:        x.Params[6].Value.StringParam,
 		}
 
-		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
 			return messageName, err
 		}
-		log.JSON = string(b)
 
-		klv, err := breakDownKLV(p.KLV)
-		if err != nil {
-			log.KLVBreakdown = nil
-			return messageName, err
-		}
-		log.KLVBreakdown = klv
+		processErr = log.addInfo(p.Checksum, string(b), p.KLV)
 		messageName = p.MsgType
 
 	case "Load":
@@ -176,19 +148,12 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string
 			Checksum:        x.Params[7].Value.StringParam,
 		}
 
-		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
 			return messageName, err
 		}
-		log.JSON = string(b)
 
-		klv, err := breakDownKLV(p.KLV)
-		if err != nil {
-			log.KLVBreakdown = nil
-			return messageName, err
-		}
-		log.KLVBreakdown = klv
+		processErr = log.addInfo(p.Checksum, string(b), p.KLV)
 
 	default:
 		p := &settlement{
@@ -205,20 +170,13 @@ func (app *application) processXMLPayload(x *xmlPayload, log *logRecord) (string
 			Checksum:           x.Params[9].Value.StringParam,
 		}
 
-		log.Checksum = p.Checksum
 		b, err := json.MarshalIndent(p, "", "  ")
 		if err != nil {
 			return messageName, err
 		}
-		log.JSON = string(b)
 
-		klv, err := breakDownKLV(p.KLV)
-		if err != nil {
-			log.KLVBreakdown = nil
-			return messageName, err
-		}
-		log.KLVBreakdown = klv
+		processErr = log.addInfo(p.Checksum, string(b), p.KLV)
 	}
 
-	return messageName, nil
+	return messageName, processErr
 }

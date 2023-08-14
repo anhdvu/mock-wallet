@@ -14,8 +14,8 @@ import (
 type application struct {
 	logger    *log.Logger
 	companion *companionResponses
-	config    config
 	apiLogger *apiLogManager
+	config    config
 }
 
 type config struct {

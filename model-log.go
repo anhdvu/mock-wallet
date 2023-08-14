@@ -34,3 +34,18 @@ func newLogRecord(t string) (*logRecord, error) {
 		ID:   id,
 	}, nil
 }
+
+func (l *logRecord) addInfo(checksumString, jsonString, klvString string) error {
+	l.Checksum = checksumString
+
+	l.JSON = jsonString
+
+	klv, err := breakDownKLV(klvString)
+	if err != nil {
+		l.KLVBreakdown = nil
+	} else {
+		l.KLVBreakdown = klv
+	}
+
+	return err
+}

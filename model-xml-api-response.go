@@ -121,12 +121,12 @@ func (cr *companionResponses) allResponses() map[string]int {
 	return o
 }
 
-func (cr *companionResponses) makeResponse(method, extraMessage string) ([]byte, error) {
+func (cr *companionResponses) makeResponse(method, messageType string) ([]byte, error) {
 	cr.mu.Lock()
 	defer cr.mu.Unlock()
 	if ok := cr.vefiryMethod(method); ok {
 		if method == "AdministrativeMessage" {
-			r := fmt.Sprintf(cr.am[extraMessage].boiler, cr.am[extraMessage].resultCode)
+			r := fmt.Sprintf(cr.am[messageType].boiler, cr.am[messageType].resultCode)
 			return []byte(r), nil
 		}
 		r := fmt.Sprintf(cr.d[method].boiler, cr.d[method].resultCode)
