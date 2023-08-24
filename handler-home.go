@@ -6,6 +6,11 @@ import "net/http"
 // it will be removed once all handlers are finished
 func (app *application) homeHandler() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			app.notFoundHandler()
+			return
+		}
+
 		payload := jsonResponse{
 			"GET /":                    "To view endpoint information",
 			"POST /companion":          "To receive Companion Remote API calls",

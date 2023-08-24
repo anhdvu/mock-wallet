@@ -32,7 +32,6 @@ func (rs *redisLogStore) GetLogByID(ctx context.Context, id string) (*logRecord,
 	}
 
 	return r, nil
-
 }
 
 func (rs *redisLogStore) SaveLog(ctx context.Context, l *logRecord) error {

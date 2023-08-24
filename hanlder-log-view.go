@@ -40,12 +40,13 @@ func (app *application) viewLogsHandler() http.HandlerFunc {
 	}
 }
 
-func (app *application) getURLParams(r *http.Request) (page, size int) {
+func (app *application) getURLParams(r *http.Request) (int, int) {
 	params := r.URL.Query()
 	pageParam := params.Get("page")
 	sizeParam := params.Get("size")
 
 	var err error
+	var page, size int
 
 	if pageParam != "" {
 		page, err = strconv.Atoi(pageParam)
@@ -75,5 +76,5 @@ func (app *application) getURLParams(r *http.Request) (page, size int) {
 		size = 50
 	}
 
-	return
+	return page, size
 }

@@ -131,7 +131,6 @@ func (cr *companionResponses) makeResponse(method, messageType string) ([]byte, 
 		}
 		r := fmt.Sprintf(cr.d[method].boiler, cr.d[method].resultCode)
 		return []byte(r), nil
-
 	}
 	return nil, ErrMethodNotExist
 }

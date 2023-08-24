@@ -13,7 +13,7 @@ const (
 
 func main() {
 	port := getEnvOrDefault("PORT", devPort)
-	redisConString := getEnvOrDefault("REDIS_CONNECTION", "redis://localhost:6379")
+	redisConString := getEnvOrDefault("REDIS_CONNECTION", "rediss://default:b53dd65dcb914e96969ab06c5ca625d1@upward-tahr-33126.upstash.io:33126")
 
 	cfg := config{
 		env:  "dev",
