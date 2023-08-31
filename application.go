@@ -23,7 +23,7 @@ type config struct {
 	port string
 }
 
-// New function returns a new instance of Mock Wallet application
+// newApp function returns a new instance of Mock Wallet application
 func newApp(config config) *application {
 	return &application{
 		logger:    log.New(os.Stdout, "", log.LstdFlags|log.Llongfile),

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 )
@@ -42,7 +41,12 @@ func (app *application) JSONRequestHandler() http.HandlerFunc {
 
 		p.ResultCode = "0000"
 
-		app.respondJSONWithLogRecord(w, http.StatusOK, p, log)
+		err = app.respondJSONWithLogRecord(w, http.StatusOK, p, log)
+		if err != nil {
+			app.logger.Println(err)
+			app.serverErrorResponse(w, err)
+			return
+		}
 
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		defer cancel()
@@ -52,7 +56,5 @@ func (app *application) JSONRequestHandler() http.HandlerFunc {
 			app.serverErrorResponse(w, err)
 			return
 		}
-
-		fmt.Println("check check check if this line is printed after the ResponseWriter has been called.")
 	})
 }

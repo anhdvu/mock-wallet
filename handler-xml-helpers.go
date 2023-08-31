@@ -14,7 +14,10 @@ func (app *application) respondXML(w http.ResponseWriter, status int, response [
 	response = append([]byte(xml.Header), response...)
 	w.Header().Add("Content-Type", "application/xml")
 	w.WriteHeader(status)
-	w.Write(response)
+	_, err := w.Write(response)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

@@ -33,10 +33,6 @@ func (app *application) respondRaw(w http.ResponseWriter, status int, data []byt
 	return nil
 }
 
-func (app *application) respondWithJSON(w http.ResponseWriter, status int, data any) error {
-	return app.respondJSONWithLogRecord(w, status, data, nil)
-}
-
 func (app *application) respondJSONWithLogRecord(w http.ResponseWriter, status int, data any, log *logRecord) error {
 	payload, err := json.Marshal(data)
 	if err != nil {
